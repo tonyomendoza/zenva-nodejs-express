@@ -1,7 +1,12 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 
 const app = express();
 const port = 3000;
+
+// update express settings
+app.use(bodyParser.urlencoded({extended: false})); // parse url encoded form data
+app.use(bodyParser.json()); // parse json
 
 /// Route Handling
 /// Express will handle route requests from top-to-bottom.
