@@ -22,6 +22,9 @@ app.use(cors({credentials: true, origin: process.env.CORS_Origin}));
 /// Express will handle route requests from top-to-bottom.
 /// So, order matters!
 
+// Passport Auth
+require('./auth/auth');
+
 // Website Routes
 app.use('/', routes);
 app.use('/', passwordRoutes);
