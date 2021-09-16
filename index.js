@@ -2,6 +2,7 @@ require('dotenv').config();
 
 const express = require('express');
 const bodyParser = require('body-parser'); // body parser should be passed down to modules such as main.js and password.js
+const cors = require('cors');
 
 const routes = require('./routes/main');
 const passwordRoutes = require('./routes/password');
@@ -13,6 +14,7 @@ const port = process.env.PORT || 3000; // || can use the right hand side as a fa
 // update express settings
 app.use(bodyParser.urlencoded({extended: false})); // parse url encoded form data
 app.use(bodyParser.json()); // parse json
+app.use(cors({credentials: true, origin: process.env.CORS_Origin}));
 
 /// Route Handling
 /// Express will handle route requests from top-to-bottom.
