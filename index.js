@@ -1,5 +1,8 @@
 const express = require('express');
-const bodyParser = require('body-parser');
+const bodyParser = require('body-parser'); // body parser should be passed down to modules such as main.js and password.js
+
+const routes = require('./routes/main');
+const passwordRoutes = require('./routes/password');
 
 const app = express();
 const port = 3000;
@@ -13,125 +16,21 @@ app.use(bodyParser.json()); // parse json
 /// So, order matters!
 
 // Website Routes
+app.use('/', routes);
+app.use('/', passwordRoutes);
 
-app.get('/', (request, response) => {
+
+// test Routes
+
+app.get('/hello-world', (request, response) => {
     console.log(request);
-    response.send("Hello World");
+    response.send("Hello World 2");
 })
 
-app.get('/status', (request, response) => {
+app.get('/test', (request, response) => {
     console.log(request);
-    response.status(200).json({
-        'message': 'ok',
-        status: 200
-    });
-});
-
-/// Created to test error handling.
-/// The real signup route is below. 
-/*app.post('/signup', (request, response, next) => {
-    //console.log(request);
-    next(new Error('test'));
-    // response.status(200).json({
-    //     'message': 'ok',
-    //     status: 200
-    // });
-});*/
-
-app.post('/signup', (request, response, next) => {
-    if(!request.body){
-        response.status(400).json({
-            message: 'invalid body',
-            status: 400
-        });
-    }
-    else {
-        response.status(200).json({
-            message: 'ok',
-            status: 200
-        });
-    }
-});
-
-app.post('/login', (request, response) => {
-    if(!request.body){
-        response.status(400).json({
-            message: 'invalid body',
-            status: 400
-        });
-    }
-    else {
-        response.status(200).json({
-            message: 'ok',
-            status: 200
-        });
-    }
-});
-
-
-app.post('/logout', (request, response) => {
-    if(!request.body){
-        response.status(400).json({
-            message: 'invalid body',
-            status: 400
-        });
-    }
-    else {
-        response.status(200).json({
-            message: 'ok',
-            status: 200
-        });
-    }
-});
-
-
-app.post('/token', (request, response) => {
-    if(!request.body || !request.body.refreshToken){
-        response.status(400).json({
-            message: 'invalid body',
-            status: 400
-        });
-    }
-    else {
-        const { refreshToken } = request.body;
-        response.status(200).json({
-            message: `refresh token requested for token: ${refreshToken}`,
-            status: 200
-        });
-    }
-});
-
-app.post('/forgot-password', (request, response) => {
-    if(!request.body || !request.body.email){
-        response.status(400).json({
-            message: 'invalid body',
-            status: 400
-        });
-    }
-    else {
-        const { email } = request.body;
-        response.status(200).json({
-            message: `forgot password requested for email: ${email}`,
-            status: 200
-        });
-    }
-});
-
-app.post('/reset-password', (request, response) => {
-    if(!request.body || !request.body.email){
-        response.status(400).json({
-            message: 'invalid body',
-            status: 400
-        });
-    }
-    else {
-        const { email } = request.body;
-        response.status(200).json({
-            message: `password reset requested for email: ${email}`,
-            status: 200
-        });
-    }
-});
+    response.send("test");
+})
 
 // catch all other routes
 
@@ -148,18 +47,6 @@ app.use((error, request, response, next) => {
         status: 500 // error.status
     });
 });
-
-// test Routes
-
-app.get('/hello-world', (request, response) => {
-    console.log(request);
-    response.send("Hello World 2");
-})
-
-app.get('/test', (request, response) => {
-    console.log(request);
-    response.send("test");
-})
 
 app.listen(port, () => {
     console.log("App is running on PORT=" + port);
