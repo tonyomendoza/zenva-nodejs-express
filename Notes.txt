@@ -1,0 +1,10 @@
+Routes:
+    - 404 handler
+    - 505 handler
+ X   - status
+ X   - signup
+ X   - login
+ X   - logout
+ X   - token
+ X   - forgot password
+ X   - reset password
