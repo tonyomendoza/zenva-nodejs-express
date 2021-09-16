@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const express = require('express');
 const bodyParser = require('body-parser'); // body parser should be passed down to modules such as main.js and password.js
 
@@ -5,7 +7,8 @@ const routes = require('./routes/main');
 const passwordRoutes = require('./routes/password');
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000; // || can use the right hand side as a fallback
+//console.log(process.env);
 
 // update express settings
 app.use(bodyParser.urlencoded({extended: false})); // parse url encoded form data
