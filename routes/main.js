@@ -8,11 +8,20 @@ router.get('/', (request, response) => {
 
 router.get('/status', (request, response) => {
     console.log(request);
+    //response.cookie('testing', 'test');
     response.status(200).json({
         'message': 'ok',
         status: 200
     });
 });
+
+/*router.get('/status2', (request, response) => {
+    console.log(request.cookies);
+    response.status(200).json({
+        'message': 'ok',
+        status: 200
+    });
+});*/
 
 /// Created to test error handling.
 /// The real signup route is below. 
