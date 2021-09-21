@@ -8,3 +8,15 @@ Routes:
  X   - token
  X   - forgot password
  X   - reset password
+
+Schemas
+    Users
+    - email (R)
+    - password (R)
+    - username (R)
+    - resetToken(O)
+    - resetTokenExp (0) // expiration date
+
+    Chat
+    - email (R)
+    - message (R)
