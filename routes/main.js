@@ -56,11 +56,11 @@ router.post('/login', async (request, response, next) => {
                     name: user.username
                 };
                 const token = jwt.sign({user:  body}, process.env.JWT_SECRET, { expiresIn: 86400})
-                const refreshToken = jwt.sign({user: body}, process.env.JWT_REFRESH_SECRET, {expiresIn: 86400})
+                const refreshToken = jwt.sign({ user: body }, process.env.JWT_REFRESH_SECRET, { expiresIn: 86400 });
     
                 // store tokens in cookie
                 response.cookie('jwt', token);
-                response.cookie('refreshjwt', refreshToken);
+                response.cookie('refreshJwt', refreshToken);
                 
                 // store tokens in memory
                 tokenList[refreshToken] = {
@@ -83,18 +83,18 @@ router.post('/login', async (request, response, next) => {
 
 
 router.post('/logout', (request, response) => {
-    if(!request.body){
-        response.status(400).json({
-            message: 'invalid body',
-            status: 400
-        });
+    if (request.cookies){
+        const refreshToken = request.cookies.refreshJwt;
+        if (refreshToken in tokenList){
+            delete tokenList[refreshToken];
+        }
+        response.clearCookie('jwt');
+        response.clearCookie('refreshJwt');
     }
-    else {
-        response.status(200).json({
-            message: 'ok',
-            status: 200
-        });
-    }
+    response.status(200).json({
+        message: 'logged out',
+        status: 200
+    });
 });
 
 
