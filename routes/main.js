@@ -10,6 +10,14 @@ router.get('/', (request, response) => {
     response.send("Hello World");
 })
 
+router.get('/test-jwt', passport.authenticate('jwt', {session: false}), async (request, response) => {
+    //response.cookie('testing', 'test');
+    response.status(200).json({
+        'message': 'ok',
+        status: 200
+    });
+});
+
 router.get('/status', (request, response) => {
     console.log(request);
     //response.cookie('testing', 'test');
