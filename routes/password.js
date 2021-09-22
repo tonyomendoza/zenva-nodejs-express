@@ -1,33 +1,37 @@
 const express = require('express');
-const router = express.Router();
-const hbs = require('node-mailer-express-handlebars');
-const nodemailer = erquire('nodemailer');
+const hbs = require('nodemailer-express-handlebars');
+const nodemailer = require('nodemailer');
 const path = require('path');
+
+const router = express.Router();
 
 const email = process.env.EMAIL;
 const password = process.env.PASSWORD;
 
 const smtpTransport = nodemailer.createTransport({
-    service: process.env.EMAIL_PROVIDER,
+    host: process.env.EMAIL_PROVIDER,
+    secure: true, // use TLS
+    port: process.env.SMTP_PORT,
     auth: {
-        user:email,
-        pass: password
-    }
-});
+      user: email,
+      pass: password,
+    },
+  });
 
-const handlebarsOptions = {
+  const handlebarsOptions = {
     viewEngine: {
-        extName: '.hbs',
-        partialsDir: './templates/',
-        layoutsDir: './templates/'
+      extName: '.hbs',
+      defaultLayout: null,
+      partialsDir: './templates/',
+      layoutsDir: './templates/'
     },
     viewPath: path.resolve('./templates/'),
-    extName: '.html'
-}
+    extName: '.html',
+  };
 
-smptpTransport.use('compile', hbs(handlebarsOptions));
+smtpTransport.use('compile', hbs(handlebarsOptions));
 
-router.post('/forgot-password', (request, response) => {
+router.post('/forgot-password', async (request, response) => {
     if(!request.body || !request.body.email){
         response.status(400).json({
             message: 'invalid body',
@@ -35,15 +39,32 @@ router.post('/forgot-password', (request, response) => {
         });
     }
     else {
-        const { email } = request.body;
+        const userEmail = request.body.email;
+        const emailOptions = {
+          to: userEmail,
+          from: email,
+          template: 'forgot-password',
+          subject: 'Zenva Phaser MMO Password Reset',
+          context: {
+            name: "Joe",
+            url: `http://localhost:${process.env.PORT || 3000}`,
+          },
+        };
+
+        console.log(emailOptions);
+
+        // send user password reset email
+        await smtpTransport.sendMail(emailOptions);
+
+
         response.status(200).json({
-            message: `forgot password requested for email: ${email}`,
+            message: `An email has been sent to your email address. Password reset link is only valid for 10 minutes`,
             status: 200
         });
     }
 });
 
-router.post('/reset-password', (request, response) => {
+router.post('/reset-password', async (request, response) => {
     if(!request.body || !request.body.email){
         response.status(400).json({
             message: 'invalid body',
@@ -51,9 +72,23 @@ router.post('/reset-password', (request, response) => {
         });
     }
     else {
-        const { email } = request.body;
+        const userEmail = request.body.email;
+        const emailOptions = {
+            to: userEmail,
+            from: email,
+            template: 'reset-password',
+            subject: 'Zenva Phaser MMO Password Reset Confirmation',
+            context: {
+                name: 'Joe',
+            }
+        }
+
+        // send user password reset email
+        await smtpTransport.sendMail(emailOptions);
+
+
         response.status(200).json({
-            message: `password reset requested for email: ${email}`,
+            message: `Password Updated`,
             status: 200
         });
     }
