@@ -18,6 +18,7 @@ const mongoConfig = {
     /*useNewUrlParser: true,
     useCreateIndex: true,*/
 }
+//mongoose.set('useFindAndModify', false);
 if (!process.env.MONGO_CONNECTION_URL && process.env.MONGO_USERNMAME && process.env.MONGO_PASSWORD){
     mongoConfig.auth = { authSource: 'admin' };
     mongoConfig.user = process.env.MONGO_USERNMAME;
